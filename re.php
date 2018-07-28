@@ -47,7 +47,6 @@ function getip($i)
 
    return $str;
   }  
-  echo getRandChar(32);
 function tc($s, $e) {
     $hour = floor((strtotime($e) - strtotime($s)) % 86400 / 3600);
     $minute = floor((strtotime($e) - strtotime($s)) % 86400 / 60);
