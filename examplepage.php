@@ -27,7 +27,7 @@ $user=getnowusr();
 <h4>来重设密码（在登陆后）</h4>
 <p><a href='auth.php?reset'>重设密码</a></p>
 <hr>
-<h3>通过访问re.php?logout=true</h3>
+<h3>通过访问auth.php?logout</h3>
 <h4>来登出↓</h4>
-<p><a href='re.php?logout=true'>登出</a></p>
+<p><a href='auth.php?logout'>登出</a></p>
 <hr>

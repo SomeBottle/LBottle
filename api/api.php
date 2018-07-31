@@ -1,5 +1,8 @@
-﻿<?php
-require_once './config.php';
+<?php 
+/*简单配置*/
+$redirect='http://'.$_SERVER['HTTP_HOST'].'/'.'examplepage.php';/*登录后跳转页*/
+$sessionname='bottle';/*session区分符*/
+/*配置结束*/
 @session_start();
 function deleteDir($dir)
     {
@@ -19,6 +22,18 @@ function deleteDir($dir)
         }
         @rmdir($dir);
     }
+	  function grc($length){
+   $str = null;
+   $strPol = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopqrstuvwxyz7823647^&*^&*^&(^GYGdghevghwevfghfvgrf_+KD:QW{D
+   NUIGH^&S%$X%#$XWUXWJBXHWBXJHXHWBXHWJBJBXWJHVB';
+   $max = strlen($strPol)-1;
+
+   for($i=0;$i<$length;$i++){
+    $str.=$strPol[rand(0,$max)];
+   }
+
+   return $str;
+  }  
 function setprofile($usr,$pr,$ct){
 	if(!file_exists(dirname(__FILE__) . '/../u/'.$usr.'/profile.php')){
 		file_put_contents(dirname(__FILE__) . '/../u/'.$usr.'/profile.php','<?php $profiles=array();?>');
@@ -71,15 +86,26 @@ function getusr($id){
 	return $users[$id];
 }
 function checklogin(){
-	if(isset($_SESSION[sesname().'user'])&&$_SESSION[sesname().'iflogin']=='logged'){
+	global $sessionname;
+	if(isset($_SESSION[$sessionname.'usr'])&&$_SESSION[$sessionname.'logged']=='yes'){
 		return true;
 	}else{
         return false;
 	}	
 }
 function getnowusr(){
-	if(isset($_SESSION[sesname().'user'])){
-		return $_SESSION[sesname().'user'];
+	global $sessionname;
+	if(isset($_SESSION[$sessionname.'usr'])){
+		return $_SESSION[$sessionname.'usr'];
+	}
+}
+function setpass($up,$pw){
+	if(is_dir(dirname(__FILE__) . '/../u/'.$up)){
+		$salt=base64_encode(base64_encode(grc(64)).base64_encode(grc(64)).base64_encode(grc(64)).base64_encode(grc(64)).base64_encode(grc(64)));
+		$pass=sha1(crypt(sha1(htmlspecialchars($pw)),$salt));
+		file_put_contents('./u/'.$up.'/passport.php','<?php $authpass=\''.$pass.'\';$authsalt=\''.$salt.'\';?>');
+	}else{
+		return false;
 	}
 }
 @session_write_close();
