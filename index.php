@@ -195,6 +195,7 @@ input[type="text"],input[type="password"]{transition: 1s ease;font-family:'\5FAE
 <p><input type='submit' value='Come On!'></input></p>
 </form>
 <?php }  ?>
+<p><a href='javascript:void(0);' onclick='goback()' style='color:#AAA;'>返回</a></p>
 </div>
 </body>
-<script>$('#co').animate({opacity:'1'},1000);</script>
+<script>$('#co').animate({opacity:'1'},1000);function goback(){window.history.go(-1);}</script>
