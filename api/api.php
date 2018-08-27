@@ -2,6 +2,7 @@
 /*简单配置*/
 $redirect='http://'.$_SERVER['HTTP_HOST'].'/'.'examplepage.php';/*登录后跳转页*/
 $sessionname='bottle';/*session区分符*/
+$allowreg=true;/*是否允许注册*/
 /*配置结束*/
 @session_start();
 function deleteDir($dir)

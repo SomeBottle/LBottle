@@ -93,6 +93,7 @@ if(intval($ips[getip(false)]['ts'])>0){
 				$msg='账号密码不匹配。';
 			}
 		}else{/*最长用户名限制*/
+		if($allowreg){
 			if(strlen($u)>=4&&strlen($u)<=14&&!preg_match("/[\'.,:;*?~`!@#$%^&+=)(<>{}]|\]|\[|\/|\\\|\"|\|/",$u)&&!is_numeric($u)){
 				if(!preg_match('/[\x{4e00}-\x{9fa5}]/u', $u)){
 					/*限制密码长度*/
@@ -132,6 +133,9 @@ if(intval($ips[getip(false)]['ts'])>0){
 			}else{
 				$msg='用户名限制4-14个字符，不允许纯数字和特殊符号~';
 			}
+		}else{
+			$msg='=A=注册被关闭了~';
+		}
 		}
 	}else{
 		$msg='验证码不对诶，已经帮你重置了。';
