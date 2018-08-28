@@ -66,7 +66,7 @@ if ($rq == 'verify') {
         file_put_contents('./u/ips.php', '<?php $denys=array();$ips=array();?>');
     }
     if (!file_exists('./u/indexes.php')) {
-        file_put_contents('./u/indexes.php', '<?php $users=array();?>');
+        file_put_contents('./u/indexes.php', '<?php $users=array();$emails=array();?>');
     }
     require_once './u/ips.php';
     require_once './u/indexes.php';
@@ -111,6 +111,7 @@ if ($rq == 'verify') {
                             /*限制密码长度*/
                             if (strlen($p) >= 4 && strlen($p) <= 16) {
                                 if (!in_array(getip(false), $denys)) {
+									if(!array_key_exists($email,$emails)){
                                     if ($mailauth && empty($maillink)) { /*是否开启邮箱验证*/
                                         if (empty($email)) {
                                             $msg = '您正在注册，请补充邮箱';
@@ -118,9 +119,9 @@ if ($rq == 'verify') {
                                         } else {
                                             $sendmail = true;
                                             $msg = '<p>邮件已经发送</p><p>请点击邮件中的链接以继续注册</p>';
-                                            $authcode = grc(48);
+                                            $authcode = base64_encode(grc(48));
                                             $authlink = 'http://' . $_SERVER['SERVER_NAME'] . $_SERVER["REQUEST_URI"] . '&code=' . $authcode;
-                                            $_SESSION[$sessionname . 'mailcode'] = md5($authcode);
+                                            $_SESSION[$sessionname . 'mailcode'] = md5(base64_decode($authcode));
                                             $_SESSION[$sessionname . 'reguser'] = $u;
                                             $_SESSION[$sessionname . 'regpass'] = $p;
                                             $_SESSION[$sessionname . 'regmail'] = $email; /*注册信息临时存入服务端*/
@@ -129,7 +130,7 @@ if ($rq == 'verify') {
                                             sendcode($email, $authlink);
                                         }
                                     } else {
-                                        if (md5($maillink) == $_SESSION[$sessionname . 'mailcode'] || !$mailauth) {
+                                        if (md5(base64_decode($maillink)) == $_SESSION[$sessionname . 'mailcode'] || !$mailauth) {
                                             /*注册*/
                                             $salt = base64_encode(base64_encode(grc(64)) . base64_encode(grc(64)) . base64_encode(grc(64)) . base64_encode(grc(64)) . base64_encode(grc(64)));
                                             $pass = sha1(crypt(sha1(htmlspecialchars($p)), $salt));
@@ -149,11 +150,14 @@ if ($rq == 'verify') {
                                             setprofile($u, 'regip', getip(true));
                                             $usernum = count($users);
                                             $users[$usernum] = $u;
+											if(!empty($email)){
+											$emails[$email]=$u;
+											}
                                             $p = '';
                                             $u = '';
                                             $e = '';
                                             $email = '';
-                                            file_put_contents('./u/indexes.php', '<?php $users=' . var_export($users, true) . ';?>');
+                                            file_put_contents('./u/indexes.php', '<?php $users=' . var_export($users, true) . ';$emails='.var_export($emails,true).';?>');
                                         } else {
                                             $msg = '邮箱验证失败，请重新注册.';
                                         }
@@ -163,6 +167,9 @@ if ($rq == 'verify') {
                                         unset($_SESSION[$sessionname . 'regmail']);
                                         unset($_SESSION[$sessionname . 'regprocess']);
                                     }
+									}else{
+										$msg = '邮箱已经存在OAQ';
+									}
                                 } else {
                                     $msg = '不允许多次注册。';
                                 }
