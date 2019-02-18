@@ -144,10 +144,10 @@ if ($rq == 'verify') {
                                             /*存入用户序列*/
                                             setprofile($u, 'name', $u);
                                             setprofile($u, 'md', getip(false));
-                                            setprofile($u, 'permission', 'member');
                                             setprofile($u, 'regtime', $ntime);
                                             setprofile($u, 'email', $email);
                                             setprofile($u, 'regip', getip(true));
+											require './api/afterreg.php';
                                             $usernum = count($users);
                                             $users[$usernum] = $u;
 											if(!empty($email)){
